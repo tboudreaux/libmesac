@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+src="src"
+modules=$(find $src/ -mindepth 1 -maxdepth 1 -type d)
+initDir=$(pwd)
+
+for module in $modules; do
+  module_name=$(basename $module)
+  echo "Building $module_name..."
+  cd ./$module 
+
+  # if module has a build.sh script, run it
+  if [ -f build ]; then
+    ./build
+    touch .built
+  else
+    echo "No build script found for $module_name"
+  fi
+
+  cd $initDir
+done
+
+

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+rm -r lib
+rm -r include
+
+src="src"
+modules=$(find $src/ -mindepth 1 -maxdepth 1 -type d)
+initDir=$(pwd)
+
+for module in $modules; do
+  module_name=$(basename $module)
+  echo "Cleaning $module_name..."
+  cd ./$module 
+
+  # if module has a makefile, clean it
+  if [ -f "makefile" ]; then
+    make clean
+  fi
+  cd $initDir
+done
+
+if [ -d "lib" ]; then
+  rm -r lib
+fi
+if [ -d "include" ]; then
+  rm -r include
+fi
+if [ -d "bin" ]; then
+  rm -r bin
+fi

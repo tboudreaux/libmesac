@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+make clean
+
+mkdir -p bin
+mkdir -p include
+
+make libcmesautils.o
+make libkapc.o
+make libkapf.o
+

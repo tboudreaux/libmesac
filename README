@@ -1,0 +1,6 @@
+# Compiling
+./build
+
+# Running
+tests/kap > make
+./rn
