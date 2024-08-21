@@ -1,0 +1,6 @@
+*._DS*
+*.DS*
+__pycache__/
+*.ipynb-checkpoints
+*.built
+TODO
