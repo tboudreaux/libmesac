@@ -12,7 +12,6 @@ for module in $modules; do
   # if module has a build.sh script, run it
   if [ -f build ]; then
     ./build
-    touch .built
   else
     echo "No build script found for $module_name"
   fi

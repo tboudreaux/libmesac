@@ -27,6 +27,8 @@ for module in $modules; do
 
   cp *.h $initDir/include
   cd $initDir
-  echo "Creating lib$module cmesa.a..."
-  ar rcs lib/lib$module\cmesa.a bin/*$module*.o
+  cmd="ar rcs lib/lib"$module"cmesa.a bin/*$module*.o"
+  echo "Building Static $module Library ($cmd)"
+  echo $cmd
+  ar rcs lib/lib"$module"cmesa.a bin/*$module*.o
 done

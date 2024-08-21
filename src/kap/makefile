@@ -38,7 +38,7 @@ iSRC = c_kap_interface_def.f90
 # Output executable name
 KAPLIB = libkapf.o
 cKAPLIB = libkapc.o
-iLIB = libcmesautils.o
+iLIB = libkapcutils.o
 OUTPUT = rn
 
 CC = gcc
@@ -48,14 +48,15 @@ cLDFLAGS = -fopenmp -lgfortran -lm -lquadmath
 BUILDLIBDIR = ./bin
 BUILDINCLUDEDIR = ./include
 
+$(iLIB): $(iSRC)
+	$(FC) $(FFLAGS) $(iSRC) $(INCLUDE_DIR) $(LIB_DIR) $(LIBS) $(LDFLAGS) -o $(BUILDLIBDIR)/$(iLIB) -J $(BUILDINCLUDEDIR)
+
 $(KAPLIB): $(KAPSRC)
-	$(FC) $(FFLAGS) $(KAPSRC) $(INCLUDE_DIR) $(LIB_DIR) $(LIBS) -I $(BUILDINCLUDEDIR) -I $(BUILDLIBDIR) -linterface_def -o $(BUILDLIBDIR)/$(KAPLIB) $(LDFLAGS)
+	$(FC) $(FFLAGS) $(KAPSRC) $(INCLUDE_DIR) $(LIB_DIR) $(LIBS) -I $(BUILDINCLUDEDIR) -L $(BUILDLIBDIR) -linterface_def -o $(BUILDLIBDIR)/$(KAPLIB) $(LDFLAGS)
 
 $(cKAPLIB): $(CSRC)
 	$(CC) $(CFLAGS) $(CSRC) -o $(BUILDLIBDIR)/$(cKAPLIB)
 
-$(iLIB): $(iSRC)
-	$(FC) $(FFLAGS) $(iSRC) $(INCLUDE_DIR) $(LIB_DIR) $(LIBS) $(LDFLAGS) -o $(BUILDLIBDIR)/$(iLIB) -J $(BUILDINCLUDEDIR)
 
 
 # Clean rule to remove generated files

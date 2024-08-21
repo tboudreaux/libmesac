@@ -1,15 +1,16 @@
 CC = gcc
-CFLAGS = -Wall -g -fopenmp -lgfortran -lm -lquadmath
+CFLAGS = -g
+CLIBS = -lmvec -fopenmp -lgfortran -lm -lquadmath 
 OUTPUT = rn
 SRC = kap_test.c
 
 # List of MESA modules you need to include
-MODULES = kap chem math const utils eos interp_1d interp_2d auto_diff crmath hdf5io rates net num mtx
+MODULES = kap chem math atm const utils eos interp_1d interp_2d num ionization mtx auto_diff crmath hdf5io rates net
 
 BASE_DIR = ${MESA_DIR}
 
 # Include directories for the modules
-INCLUDE_DIR = -I$(BASE_DIR)/include -I${MESASDK_ROOT}/include -I../../include/
+INCLUDE_DIR = -I$(BASE_DIR)/include -I${MESASDK_ROOT}/include
 # Library directories for the modules
 LIB_DIR = -L$(BASE_DIR)/lib -L${MESASDK_ROOT}/lib
 
@@ -29,4 +30,4 @@ SDK_LIBS = $(NUMERICAL_LIBS) $(IO_LIBS) $(CRMATH_LIB_FLAGS)
 LIBS = $(addprefix -l,$(MODULES)) $(SDK_LIBS)
 
 $(OUTPUT): $(SRC)
-	$(CC) $(CFLAGS) $(cLDFLAGS) $(SRC) ../../lib/libkapcmesa.a $(INCLUDE_DIR) $(LIB_DIR) $(LIBS) -o $(OUTPUT)
+	$(CC) $(CFLAGS) $(cLDFLAGS) $(SRC) -L../../lib -I../../include -lkapcmesa $(INCLUDE_DIR) $(LIB_DIR) $(LIBS) $(CLIBS) -o $(OUTPUT)

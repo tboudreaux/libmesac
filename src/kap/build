@@ -5,7 +5,9 @@ make clean
 mkdir -p bin
 mkdir -p include
 
-make libcmesautils.o
+make libkapcutils.o
 make libkapc.o
 make libkapf.o
+
+touch .built
 
