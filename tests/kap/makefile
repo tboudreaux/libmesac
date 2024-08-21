@@ -31,3 +31,6 @@ LIBS = $(addprefix -l,$(MODULES)) $(SDK_LIBS)
 
 $(OUTPUT): $(SRC)
 	$(CC) $(CFLAGS) $(cLDFLAGS) $(SRC) -L../../lib -I../../include -lkapcmesa $(INCLUDE_DIR) $(LIB_DIR) $(LIBS) $(CLIBS) -o $(OUTPUT)
+
+clean:
+	rm -f $(OUTPUT)
