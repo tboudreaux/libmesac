@@ -6,7 +6,7 @@ subroutine c_kap_init(use_cache, kap_cache_dir, ierr) bind(C, name="c_kap_init")
 
   implicit none
   logical, intent(in) :: use_cache
-  character(kind=c_char, len=*), intent(in) :: kap_cache_dir
+  character(kind=c_char, len=1), intent(in) :: kap_cache_dir
   integer(c_int), intent(out) :: ierr
 
   call kap_init(use_cache, kap_cache_dir, ierr)
@@ -43,7 +43,7 @@ integer function c_alloc_kap_handle_using_inlist(inlist, inlist_len, ierr) &
   use iso_c_binding, only: c_int, c_char
 
   implicit none
-  character(kind=c_char, len=*), intent(in) :: inlist
+  character(kind=c_char, len=1), intent(in) :: inlist
   integer(c_int), intent(in) :: inlist_len
   integer(c_int), intent(out) :: ierr
 
@@ -62,9 +62,9 @@ subroutine c_mesa_microphysics_init(mesa_dir_c, isotopes_c, use_cache, &
   use iso_c_binding, only: c_int, c_char
 
   implicit none
-  character(kind=c_char, len=*), intent(in) :: mesa_dir_c
-  character(kind=c_char, len=*), intent(in) :: isotopes_c
-  character(kind=c_char, len=*), intent(in) :: kap_cache_dir_c
+  character(kind=c_char, len=1), intent(in) :: mesa_dir_c
+  character(kind=c_char, len=1), intent(in) :: isotopes_c
+  character(kind=c_char, len=1), intent(in) :: kap_cache_dir_c
   logical, intent(in) :: use_cache
   integer(c_int), intent(in) :: mesa_dir_length
   integer(c_int), intent(in) :: isotopes_length
@@ -206,7 +206,7 @@ subroutine c_simple_model_read(path_c, path_len, Mstar, Z_init, Npts, Nspec, &
   implicit none
   integer, parameter :: maxpts=2000, maxspec=31, iounit=99
   integer, intent(in) :: path_len
-  character(kind=c_char, len=*) :: path_c
+  character(kind=c_char, len=1) :: path_c
   character(len=256) :: path
   real(c_double), intent(out) :: Mstar, Z_init
   integer(c_int), intent(out) :: Npts, Nspec
