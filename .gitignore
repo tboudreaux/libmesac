@@ -4,3 +4,6 @@ __pycache__/
 *.ipynb-checkpoints
 *.built
 TODO
+lib/
+bin/
+include/
