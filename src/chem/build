@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+make clean
+
+mkdir -p bin
+mkdir -p include
+
+make libchemcutils.o
+make libchemc.o
+make libchemf.o
+
+touch .built
+

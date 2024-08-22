@@ -25,11 +25,11 @@ int alloc_kap_handle_using_inlist(char *inlist, int *ierr){
   return c_alloc_kap_handle_using_inlist(&inlist, &inlist_len, ierr);
 }
 
-void mesa_microphysics_init(char *mesa_dir, char *isotopes, bool use_cache, char *kap_cache_dir, int *ierr){
+void mesa_kap_full_init(char *mesa_dir, char *isotopes, bool use_cache, char *kap_cache_dir, int *ierr){
   int mesa_dir_len = strlen(mesa_dir);
   int isotopes_len = strlen(isotopes);
   int kap_cache_dir_len = strlen(kap_cache_dir);
-  c_mesa_microphysics_init(&mesa_dir, &isotopes, &use_cache, &kap_cache_dir, ierr, &mesa_dir_len, &isotopes_len, &kap_cache_dir_len);
+  c_mesa_kap_full_init(&mesa_dir, &isotopes, &use_cache, &kap_cache_dir, ierr, &mesa_dir_len, &isotopes_len, &kap_cache_dir_len);
 }
 
 void kap_prt(int handle, c_Kap_General_Info *rq, int *ierr){
@@ -54,16 +54,12 @@ int kap_setup(char *inlist, int *ierr){
   // TODO Need to free rq
 }
 
-void get_some_isos(c_chem_ids *cid){
-  c_get_some_isos(cid);
-}
-
 void kap_get(int handle, int species, int *chem_id, int *net_iso, double *xa,
-             double logRho, double logT, double lnfree_e,
-             double d_lnfree_e_dlnRho, double d_lnfree_e_dlnT, double eta,
-             double d_eta_dlnRho, double d_eta_dlnT, double *kap_fracs,
-             double *kap, double *dlnkap_dlnRho, double *dlnkap_dlnT,
-             double *dlnkap_dxa, int *ierr)
+             int NSpec, int maxpts, double logRho, double logT, double
+             lnfree_e, double d_lnfree_e_dlnRho, double d_lnfree_e_dlnT, double
+             eta, double d_eta_dlnRho, double d_eta_dlnT, double *kap_fracs,
+             double *kap, double *dlnkap_dlnRho, double *dlnkap_dlnT, double
+             *dlnkap_dxa, int *ierr)
 {
   int num_kap_fracs = 0;
 
@@ -73,6 +69,8 @@ void kap_get(int handle, int species, int *chem_id, int *net_iso, double *xa,
     chem_id,
     net_iso,
     xa,
+    &NSpec,
+    &maxpts,
     &logRho,
     &logT,
     &lnfree_e,
@@ -93,18 +91,6 @@ void kap_get(int handle, int species, int *chem_id, int *net_iso, double *xa,
   printf("Number of kap fracs: %d\n", num_kap_fracs);
 }
 
-int get_num_chem_isos(){
-  return c_get_num_chem_isos();
-}
-
 int get_num_kap_fracs(){
   return c_get_num_kap_fracs();
-}
-
-void simple_mesa_model_read(char *path, double *Mstar, double *Z_init, int
-                            *Npts, int *Nspec, double *lnRho, double *lnT,
-                            double *lnR, double *L, double *dq, double *X, int *ierr){
-
-  int path_len = strlen(path);
-  c_simple_model_read(&path, &path_len, Mstar, Z_init, Npts, Nspec, lnRho, lnT, lnR, L, dq, X, ierr);
 }
