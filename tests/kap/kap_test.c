@@ -54,14 +54,33 @@ int main(){
   double dq[maxpts];
   double X[NSpec][maxpts];
 
-
-
   simple_mesa_model_read("sample_kap_agb.model", &Mstar, &Z_init, &Npts, &Nspec,
                          lnRho, lnT, lnR, &L, dq, X, &ierr);
 
+  printf("Example Read Data...\n");
   printf("Mstar: %f\n", Mstar);
+  printf("Z_init: %f\n", Z_init);
+  printf("Npts: %d\n", Npts);
+  printf("Nspec: %d\n", Nspec);
+  printf("X[0][0]: %f\n", X[0][0]);
+  printf("X[0][1]: %f\n", X[0][1]);
+  printf("X[1][0]: %f\n", X[1][0]);
 
-  // kap_get(handle, 0, NULL, NULL, NULL, 10.0, 7.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-  //         NULL, NULL, NULL, NULL, NULL, &ierr);
+  int num_kap_fracs = get_num_kap_fracs();
+
+  double *kap_fracs = malloc(num_kap_fracs * sizeof(double));
+  double kap;
+  double dlnkap_dlnRho;
+  double dlnkap_dlnT;
+  double dlnkap_dxa[NSpec];
+
+
+  kap_get(handle, Nspec, chem_id, net_iso, X, lnRho[0], lnT[0], lnfree_e,
+          d_lnfree_e_dlnRho, d_lnfree_e_dlnT, eta, d_eta_dlnRho, d_eta_dlnT,
+          kap_fracs, &kap, &dlnkap_dlnRho, &dlnkap_dlnT, dlnkap_dxa, &ierr);
+
+  printf("kap (from c -- confirm match with fortran!): %f\n", kap);
+
+  free(kap_fracs);
   return 0;
 }

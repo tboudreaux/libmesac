@@ -97,6 +97,10 @@ int get_num_chem_isos(){
   return c_get_num_chem_isos();
 }
 
+int get_num_kap_fracs(){
+  return c_get_num_kap_fracs();
+}
+
 void simple_mesa_model_read(char *path, double *Mstar, double *Z_init, int
                             *Npts, int *Nspec, double *lnRho, double *lnT,
                             double *lnR, double *L, double *dq, double *X, int *ierr){

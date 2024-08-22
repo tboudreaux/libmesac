@@ -144,13 +144,16 @@ end subroutine c_get_some_isos
 
 integer function c_get_num_chem_isos() result(nci) bind(C, name="c_get_num_chem_isos")
   use chem_def, only: num_chem_isos
-
   nci = num_chem_isos
 end function c_get_num_chem_isos
   
+integer function c_get_num_kap_fracs() result(n) bind(C, name="c_get_num_kap_fracs")
+  use kap_def, only: num_kap_fracs
+  n = num_kap_fracs
+end function c_get_num_kap_fracs
 
 subroutine c_kap_get( &
-  handle, species, chem_id, net_iso, xa, &
+  handle, species, chem_id_ptr, net_iso_ptr, xa_ptr, &
   logRho, logT, &
   lnfree_e, d_lnfree_e_dlnRho, d_lnfree_e_dlnT, &
   eta, d_eta_dlnRho, d_eta_dlnT , &
@@ -161,13 +164,16 @@ subroutine c_kap_get( &
   use kap_lib, only : kap_get
   use const_def, only: dp
   use chem_def
-  use iso_c_binding, only: c_int, c_double, c_ptr
+  use iso_c_binding, only: c_int, c_double, c_ptr, c_f_pointer
 
   integer, intent(in) :: handle ! from alloc_kap_handle; in star, pass s% kap_handle
   integer, intent(in) :: species
-  integer, pointer :: chem_id(:) ! maps species to chem id
-  integer, pointer :: net_iso(:) ! maps chem id to species number
-  real(dp), intent(in) :: xa(:) ! mass fractions
+  type(c_ptr), value :: chem_id_ptr ! maps species to chem id
+  integer(c_int), pointer :: chem_id(:)
+  type(c_ptr), value :: net_iso_ptr ! maps chem id to species number
+  integer(c_int), pointer :: net_iso(:) ! maps chem id to species number
+  type(c_ptr), value :: xa_ptr
+  real(dp), pointer :: xa(:, :) ! mass fractions
   real(dp), intent(in) :: logRho ! density
   real(dp), intent(in) :: logT ! temperature
   real(dp), intent(in) :: lnfree_e, d_lnfree_e_dlnRho, d_lnfree_e_dlnT
@@ -181,18 +187,38 @@ subroutine c_kap_get( &
   real(dp), intent(out) :: kap ! opacity
   real(dp), intent(out) :: dlnkap_dlnRho ! partial derivative at constant T
   real(dp), intent(out) :: dlnkap_dlnT   ! partial derivative at constant Rho
-  real(dp), intent(out) :: dlnkap_dxa(:) ! partial derivative w.r.t. species
+  real(dp), intent(out) :: dlnkap_dxa(31) ! partial derivative w.r.t. species
   integer, intent(out) :: ierr ! 0 means AOK.
 
   type (Kap_General_Info), pointer :: rq
+  call c_f_pointer(chem_id_ptr, chem_id, [31])
+  call c_f_pointer(net_iso_ptr, net_iso, [31])
+  call c_f_pointer(xa_ptr, xa, [31, 2000])
 
   cref_num_kap_fracs = num_kap_fracs
+  if (.not. associated(chem_id)) then
+      print *, "chem_id is not associated. This could indicate an issue."
+      ierr = -1
+      return
+  endif
+  print*, "Associated: ", associated(chem_id)
+  do i = 1, 31
+      print *, "chem_id(", i, ") = ", chem_id(i)
+  end do
+  do i = 1, 31
+      print *, "net_iso(", i, ") = ", net_iso(i)
+  end do
+  do i = 1, 31
+      print *, "xa(", i, " 1) = ", xa(i, 1)
+  end do
 
-  ! call kap_get(handle, species, cham_id, net_iso, xa, &
-  !             logRho, logT, &
-  !             lnfree_e, d_lnfree_e_dlnRho, d_lnfree_e_dlnT, &
-  !             eta, d_eta_dlnRho, d_eta_dlnT, &
-  !             kap_fracs, kap, dlnkap_dlnRho, dlnkap_dlnT, dlnkap_dxa, ierr)
+  call kap_get(handle, species, chem_id, net_iso, xa(:, 1), &
+              logRho, logT, &
+              lnfree_e, d_lnfree_e_dlnRho, d_lnfree_e_dlnT, &
+              eta, d_eta_dlnRho, d_eta_dlnT, &
+              kap_fracs, kap, dlnkap_dlnRho, dlnkap_dlnT, dlnkap_dxa, ierr)
+
+  print *, "kap (from fortran) = ", kap
 
 
 end subroutine c_kap_get

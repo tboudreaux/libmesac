@@ -15,6 +15,7 @@ extern void c_kap_setup_hooks(int *handle, int *ierr);
 extern void c_get_some_isos(c_chem_ids *cid);
 extern void c_kap_get(int *handle, int *species, int *chem_id, int *net_iso, double *xa, double *logRho, double *logT, double *lnfree_e, double *d_lnfree_e_dlnRho, double *d_lnfree_e_dlnT, double *eta, double *d_eta_dlnRho, double *d_eta_dlnT, double *kap_fracs, int *num_kap_fracs, double *kap, double *dlnkap_dlnRho, double *dlnkap_dlnT, double *dlnkap_dxa, int *ierr);
 extern int c_get_num_chem_isos();
+extern int c_get_num_kap_fracs();
 extern void c_simple_model_read(char **path, int *path_len, double *Mstar, double *Z_init, int *Npts, int *Nspec, double *lnRho, double *lnT, double *lnR, double *L, double *dq, double *X, int *ierr);
 
 
