@@ -28,9 +28,10 @@ SDK_LIBS = $(NUMERICAL_LIBS) $(IO_LIBS) $(CRMATH_LIB_FLAGS)
 
 # Libraries to link against (assuming each module has a corresponding library)
 LIBS = $(addprefix -l,$(MODULES)) $(SDK_LIBS)
+LIBMESAC = -L../../lib -I../../include -lkapcmesa -lutilscmesa -lchemcmesa
 
 $(OUTPUT): $(SRC) ../../lib/libkapcmesa.a
-	$(CC) $(CFLAGS) $(cLDFLAGS) $(SRC) -L../../lib -I../../include -lkapcmesa $(INCLUDE_DIR) $(LIB_DIR) $(LIBS) $(CLIBS) -o $(OUTPUT)
+	$(CC) $(CFLAGS) $(cLDFLAGS) $(SRC) $(LIBMESAC) $(INCLUDE_DIR) $(LIB_DIR) $(LIBS) $(CLIBS) -o $(OUTPUT)
 
 clean:
 	rm -f $(OUTPUT)
