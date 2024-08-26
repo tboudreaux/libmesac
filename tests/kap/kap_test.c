@@ -22,7 +22,7 @@ int main(){
   printf("mesa_microphysics_init ierr=%d\n", ierr);
 
   // Allocate the kappa handle and memory space from the inlist
-  handle = kap_setup("inlist_sample", &ierr);
+  handle = kap_setup("../share/kap_test_data/inlist_sample", &ierr);
 
   // These should come from an EOS call; however, for now they are find here
   double lnfree_e = 0;
@@ -66,7 +66,7 @@ int main(){
   double dq[maxpts];
   double X[NSpec][maxpts];
 
-  simple_mesa_model_read("sample_kap_agb.model", &Mstar, &Z_init, &Npts, &Nspec,
+  simple_mesa_model_read("../share/kap_test_data/sample_kap_agb.model", &Mstar, &Z_init, &Npts, &Nspec,
                          lnRho, lnT, lnR, &L, dq, X, &ierr);
 
   printf("Selected Model params...\n");
