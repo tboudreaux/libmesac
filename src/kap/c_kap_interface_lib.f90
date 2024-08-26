@@ -1,5 +1,3 @@
-
-
 !-----------------------------------------------------------------------
 ! Subroutine: c_kap_init
 ! Description: Initializes the KAP library.
@@ -116,7 +114,6 @@ subroutine c_mesa_kap_full_init(mesa_dir_c, isotopes_c, use_cache, &
   mesa_dir = mesa_dir_c(1:mesa_dir_length)
   isotopes = isotopes_c(1:isotopes_length)
   kap_cache_dir = kap_cache_dir_c(1:kap_cache_dir_length)
-
 
   call const_init(mesa_dir, ierr)
   call math_init()

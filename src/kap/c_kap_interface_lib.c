@@ -87,8 +87,6 @@ void kap_get(int handle, int species, int *chem_id, int *net_iso, double *xa,
     dlnkap_dxa,
     ierr
   );
-
-  printf("Number of kap fracs: %d\n", num_kap_fracs);
 }
 
 int get_num_kap_fracs(){

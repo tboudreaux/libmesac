@@ -1,4 +1,7 @@
+#include <string.h>
+
 #include "c_utils_interface_lib.h"
+#include "c_utils_interface_external.h"
 
 void simple_mesa_model_read(char *path, double *Mstar, double *Z_init, int
                             *Npts, int *Nspec, double *lnRho, double *lnT,

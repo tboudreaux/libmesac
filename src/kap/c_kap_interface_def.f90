@@ -77,7 +77,7 @@ module kap_interface_def
 
     call c_f_pointer(c_rq_ptr, rq)
     if (.not. associated(rq)) then
-      print *, "Pointer association failed."
+      print *, "Error (libmesac:c_kap_interface_def). Pointer association failed."
       ierr = 1
       return
     end if
