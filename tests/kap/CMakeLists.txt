@@ -3,14 +3,18 @@ set(TEST_NAME kap_test)
 
 # List the source files for the test
 set(TEST_SOURCES
-    kap_test.c
+    kap_test.cpp
 )
+
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
 
 # Define the executable for the test
 add_executable(${TEST_NAME} ${TEST_SOURCES})
 
 # Specify the include directories for the test
 target_include_directories(${TEST_NAME} PRIVATE
+    ${GTEST_INCLUDE_DIRS}
     ${CMAKE_BINARY_DIR}/include
     ${CMAKE_SOURCE_DIR}/src/kap
     ${CMAKE_SOURCE_DIR}/src/chem
@@ -24,7 +28,9 @@ target_link_libraries(${TEST_NAME}
     ${CMAKE_BINARY_DIR}/lib/libutilscmesa.a
     ${SDK_LIBS}
     gfortran
-
+    /usr/lib/libgtest.a
+    /usr/lib/libgtest_main.a
+    -pthread
 )
 
 # Specify the output directory for the test executable
