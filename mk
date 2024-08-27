@@ -6,5 +6,5 @@ cmake .. -DMESA_DIR=$MESA_DIR -DMESASDK_ROOT=$MESASDK_ROOT -DCMAKE_INSTALL_PREFI
 make
 make install
 cd install/bin
-./kap_test
+./kap_test --gtest_output=xml:test_results.xml
 cd ..
