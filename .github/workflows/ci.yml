@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'  # Run on any branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up Git repository
+      uses: actions/checkout@v3
+
+    - name: Pull Docker image
+      run: |
+        docker pull tboudreaux/libmesac-env:latest
+    
+    - name: Run Tests
+      run: |
+        docker run --rm \
+          -e BRANCH=${{ github.ref_name }} \
+          tboudreaux/libmesac-env:latest
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: /home/mesauser/libmesac/build/install/bin/test_results.xml
+
+    - name: Convert Test Results to GitHub Format
+      uses: dorny/test-reporter@v1
+      with:
+        name: Tests
+        path: test-results/test_results.xml
+        reporter: xunit
+
