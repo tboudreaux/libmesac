@@ -20,20 +20,25 @@ jobs:
     
     - name: Run Tests
       run: |
+        mkdir -p ${{ github.workspace }}/results
         docker run --rm \
           -e BRANCH=${{ github.ref_name }} \
+          -v ${{ github.workspace }}/results:/home/mesauser/results \
+          -u $(id -u):$(id -g) \
           tboudreaux/libmesac-env:latest
 
     - name: Upload Test Results
+      if: ${{ env.GITHUB_ACTIONS == 'true' }}
       uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: /home/mesauser/libmesac/build/install/bin/test_results.xml
+        path: ${{ github.workspace }}/results/test_results.xml
 
     - name: Convert Test Results to GitHub Format
+      if: ${{ env.GITHUB_ACTIONS == 'true' }}
       uses: dorny/test-reporter@v1
       with:
         name: Tests
-        path: test-results/test_results.xml
+        path: ${{ github.workspace }}/results/test_results.xml
         reporter: xunit
-
+        token: ${{ secrets.GITHUB_TOKEN }}
