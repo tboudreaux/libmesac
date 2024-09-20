@@ -21,12 +21,9 @@ jobs:
     - name: Run All libmesac Tests
       run: |
         mkdir -p ${{ github.workspace }}/results
-        echo "Github Workspace Path is ${{ github.workspace }}"
-        echo "Github Branch is ${{ github.ref_name }}"
         docker run --rm \
           -e BRANCH=${{ github.ref_name }} \
           -v ${{ github.workspace }}/results:/home/mesauser/results \
-          -u $(id -u):$(id -g) \
           tboudreaux/libmesac-env:latest
 
     # - name: Upload Test Results
