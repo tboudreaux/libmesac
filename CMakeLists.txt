@@ -9,9 +9,9 @@ include(cmake/FindMESA.cmake)
 
 # Add subdirectories for each module
 add_subdirectory(src/chem)
-# add_subdirectory(src/eos)
-add_subdirectory(src/kap)
 add_subdirectory(src/utils)
+add_subdirectory(src/eos)
+add_subdirectory(src/kap)
 
 # Add subdirectory for tests
 add_subdirectory(tests/kap)
