@@ -31,9 +31,8 @@ jobs:
       run: |
         docker run --rm \
           -e BRANCH=${{ github.ref_name }} \
-          -e REPOSITORY="https://github.com/${{ github.repository }}.git"\
+          -e REPOSITORY="https://github.com/${{ github.repository }}.git" \
           -v ${{ github.workspace }}/results:/home/mesauser/results \
-          --user "$(id -u):$(id -g)" \
           tboudreaux/libmesac-env:latest
 
     - name: Upload Test Results
