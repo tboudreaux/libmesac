@@ -1,0 +1,53 @@
+name: Testing
+
+
+on: [push]
+
+jobs:
+  libmesac-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Set up Git repository
+      uses: actions/checkout@v3
+
+    - name: Pull Docker image
+      run: |
+        docker pull tboudreaux/libmesac-env:latest
+
+    - name: Make results folder
+      run: |
+        mkdir -p ${{ github.workspace }}/results
+
+    - name: Set results folder permissions
+      run: |
+        chmod a+w ${{ github.workspace }}/results
+
+    - name: Get repository URL
+      run: |
+        REPO_URL="https://github.com/${{ github.repository }}.git"
+        echo "Repository URL is $REPO_URL"
+    
+    - name: Run All libmesac Tests
+      run: |
+        docker run --rm \
+          -e BRANCH=${{ github.ref_name }} \
+          -e REPOSITORY="https://github.com/${{ github.repository }}.git" \
+          -v ${{ github.workspace }}/results:/home/mesauser/results \
+          tboudreaux/libmesac-env:latest
+
+    - name: Upload Test Results
+      if: ${{ env.GITHUB_ACTIONS == 'true' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: ${{ github.workspace }}/results/test_results.xml
+
+    - name: Convert Test Results to GitHub Format
+      if: ${{ env.GITHUB_ACTIONS == 'true' }}
+      uses: dorny/test-reporter@v1
+      with:
+        name: Tests
+        path: ${{ github.workspace }}/results/test_results.xml
+        reporter: xunit
+        token: ${{ secrets.GITHUB_TOKEN }}
