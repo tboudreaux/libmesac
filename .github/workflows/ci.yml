@@ -2,9 +2,6 @@ name: CI
 
 on:
   push:
-    branches:
-      - main # Run on any branch
-      - feature/*
 
 jobs:
   libmesac-test:
