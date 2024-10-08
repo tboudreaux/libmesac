@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ -d "build" ]; then
+  cd build/install/bin
+  ./kap_test --gtest_output="xml:test_results.xml"
+else
+  echo "Please run ./mk first (which will also run tests automatically)"
+fi

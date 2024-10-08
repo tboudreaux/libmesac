@@ -2,27 +2,28 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "c_kap_interface_lib.h"
-#include "c_kap_interface_external.h"
-#include "c_kap_interface_def.h"
-#include "c_utils_interface_lib.h"
-#include "c_chem_interface_lib.h"
-#include "c_chem_interface_def.h"
+#include<gtest/gtest.h>
 
+extern "C" {
+  #include "c_kap_interface_lib.h"
+  #include "c_kap_interface_external.h"
+  #include "c_kap_interface_def.h"
+  #include "c_utils_interface_lib.h"
+  #include "c_chem_interface_lib.h"
+  #include "c_chem_interface_def.h"
+}
 
-int main(){
-  printf("Testing Calling MESA/kap via C interface\n");
+TEST(KapTests, KapGetWithinTolerance) {
   int ierr;
   int handle;
   const char *mesa_dir_env_name = "MESA_DIR";
   char *mesa_dir = getenv(mesa_dir_env_name);
 
   // Intialize microphysics and numerical libraries needed to get opacities from MESA/kap
-  mesa_kap_full_init(mesa_dir, "isotopes.data", false, "../../data/kap_data/cache/", &ierr);
-  printf("mesa_microphysics_init ierr=%d\n", ierr);
+  mesa_kap_full_init(mesa_dir, (char*)"isotopes.data", false, (char*)"../../data/kap_data/cache/", &ierr);
 
   // Allocate the kappa handle and memory space from the inlist
-  handle = kap_setup("../share/kap_test_data/inlist_sample", &ierr);
+  handle = kap_setup((char*)"../share/kap_test_data/inlist_sample", &ierr);
 
   // These should come from an EOS call; however, for now they are find here
   double lnfree_e = 0;
@@ -38,7 +39,7 @@ int main(){
   num_chem_isos = get_num_chem_isos();
 
   // Build the species list to compute opacities for
-  c_chem_ids *cid = malloc(sizeof(c_chem_ids));
+  c_chem_ids *cid = (c_chem_ids *)malloc(sizeof(c_chem_ids));
   get_some_isos(cid);
   int chem_id[31] = {cid->ih1, cid->ih2, cid->ihe3, cid->ili7, cid->ibe7, cid->ibe7, cid->ib8, cid->ib8,
     cid->ic12, cid->ic13, cid->in14, cid->in15, cid->io16, cid->io17, cid->io18, cid->if19,
@@ -66,18 +67,12 @@ int main(){
   double dq[maxpts];
   double X[NSpec][maxpts];
 
-  simple_mesa_model_read("../share/kap_test_data/sample_kap_agb.model", &Mstar, &Z_init, &Npts, &Nspec,
-                         lnRho, lnT, lnR, &L, dq, X, &ierr);
-
-  printf("Selected Model params...\n");
-  printf("\tMstar: %f\n", Mstar);
-  printf("\tZ_init: %f\n", Z_init);
-  printf("\tNpts: %d\n", Npts);
-  printf("\tNspec: %d\n", Nspec);
+  simple_mesa_model_read((char*)"../share/kap_test_data/sample_kap_agb.model", &Mstar, &Z_init, &Npts, &Nspec,
+                         lnRho, lnT, lnR, &L, dq, &X[0][0], &ierr);
 
   int num_kap_fracs = get_num_kap_fracs();
 
-  double *kap_fracs = malloc(num_kap_fracs * sizeof(double));
+  double *kap_fracs = (double *)malloc(num_kap_fracs * sizeof(double));
   double kap;
   double dlnkap_dlnRho;
   double dlnkap_dlnT;
@@ -86,22 +81,17 @@ int main(){
   double kap_expected = 0.237565;
   float threshold = 1e-5;
 
-  kap_get(handle, Nspec, chem_id, net_iso, X, NSpec, maxpts, lnRho[0], lnT[0], lnfree_e,
+  kap_get(handle, Nspec, chem_id, net_iso, &X[0][0], NSpec, maxpts, lnRho[0], lnT[0], lnfree_e,
           d_lnfree_e_dlnRho, d_lnfree_e_dlnT, eta, d_eta_dlnRho, d_eta_dlnT,
           kap_fracs, &kap, &dlnkap_dlnRho, &dlnkap_dlnT, dlnkap_dxa, &ierr);
 
   
-  printf("kap: %lf\n", kap);
+  EXPECT_NEAR(kap, kap_expected, threshold);
   
-  // threshold test
-  if (abs(kap - kap_expected) < threshold){
-    printf("\e[1;32mkap test passed\n");
-    free(kap_fracs);
-    return 0;
-  } else {
-    printf("\e[1;31mkap test failed\e[0m\n");
-    free(kap_fracs);
-    return 1;
-  }
-  return 2;
+  
+}
+
+int main(int argc, char **argv){
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
