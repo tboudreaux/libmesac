@@ -9,6 +9,7 @@ set(F_SOURCES
 
 set(C_SOURCES
     c_eos_interface_lib.c
+    c_eos_interface_def.c
 )
 
 # Set the directory where Fortran modules (.mod files) will be placed
@@ -51,6 +52,6 @@ install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/
     FILES_MATCHING PATTERN "*.mod"
 )
 
-install(FILES c_eos_interface_external.h c_eos_interface_lib.h
+install(FILES c_eos_interface_external.h c_eos_interface_lib.h c_eos_interface_def.h
     DESTINATION ${CMAKE_BINARY_DIR}/include)
 
